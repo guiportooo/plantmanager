@@ -1,6 +1,7 @@
 import React from 'react'
 import AppLoading from 'expo-app-loading'
 import { Welcome } from './src/pages/Welcome'
+import { UserIdentification } from './src/pages/UserIdentitfication'
 import {
   useFonts,
   Jost_400Regular,
@@ -15,5 +16,5 @@ export default function App() {
 
   if (!fontsLoaded) return <AppLoading />
 
-  return <Welcome />
+  return <UserIdentification />
 }
