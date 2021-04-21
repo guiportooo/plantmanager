@@ -54,7 +54,7 @@ export function UserIdentification() {
               onChangeText={handleInputChange}
             />
             <View style={styles.footer}>
-              <Button />
+              <Button text='Confirmar' />
             </View>
           </View>
         </View>
