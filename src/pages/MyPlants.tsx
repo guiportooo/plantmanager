@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, Text, Image, FlatList } from 'react-native'
+import { StyleSheet, View, Text, Image, FlatList, Alert } from 'react-native'
 import { Header } from '../components/Header'
+import { Load } from '../components/Load'
+import { PlantCardSecondary } from '../components/PlantCardSecondary'
 import { formatDistance } from 'date-fns'
 import { pt } from 'date-fns/locale'
-import { loadPlants, PlantProps } from '../libs/storage'
+import { loadPlants, PlantProps, removePlant } from '../libs/storage'
 import colors from '../styles/colors'
 import fonts from '../styles/fonts'
 import waterDropImg from '../assets/waterdrop.png'
-import { PlantCardSecondary } from '../components/PlantCardSecondary'
 
 export function MyPlants() {
   const [myPlants, setMyPlants] = useState<PlantProps[]>([])
@@ -33,6 +34,29 @@ export function MyPlants() {
     loadPlantsFromStorage()
   }, [])
 
+  function handleRemove(plant: PlantProps) {
+    Alert.alert('Remover', `Deseja remover a ${plant.name}?`, [
+      {
+        text: 'Não 🙏',
+        style: 'cancel',
+      },
+      {
+        text: 'Sim 🥲',
+        onPress: async () => {
+          try {
+            await removePlant(plant.id)
+            setMyPlants((oldValue) =>
+              oldValue.filter((item) => item.id !== plant.id)
+            )
+          } catch (error) {
+            Alert.alert(`Não foi possível remover a ${plant.name}! 😥`)
+          }
+        },
+      },
+    ])
+  }
+
+  if (loading) return <Load />
   return (
     <View style={styles.container}>
       <Header />
@@ -45,7 +69,12 @@ export function MyPlants() {
         <FlatList
           data={myPlants}
           keyExtractor={(_, index) => index.toString()}
-          renderItem={({ item }) => <PlantCardSecondary data={item} />}
+          renderItem={({ item }) => (
+            <PlantCardSecondary
+              data={item}
+              handleRemove={() => handleRemove(item)}
+            />
+          )}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ flex: 1 }}
         ></FlatList>
