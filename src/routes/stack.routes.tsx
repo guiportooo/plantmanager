@@ -3,10 +3,9 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { Welcome } from '../pages/Welcome'
 import { UserIdentification } from '../pages/UserIdentitfication'
 import { Confirmation } from '../pages/Confirmation'
-import { PlantSelection } from '../pages/PlantSelection'
-import colors from '../styles/colors'
 import { PlantSelected } from '../pages/PlantSelected'
-import { MyPlants } from '../pages/MyPlants'
+import AuthRoutes from './tab.routes'
+import colors from '../styles/colors'
 
 const stackRoutes = createStackNavigator()
 
@@ -25,9 +24,9 @@ const AppRoutes: React.FC = () => (
       component={UserIdentification}
     />
     <stackRoutes.Screen name='Confirmation' component={Confirmation} />
-    <stackRoutes.Screen name='PlantSelection' component={PlantSelection} />
+    <stackRoutes.Screen name='PlantSelection' component={AuthRoutes} />
     <stackRoutes.Screen name='PlantSelected' component={PlantSelected} />
-    <stackRoutes.Screen name='MyPlants' component={MyPlants} />
+    <stackRoutes.Screen name='MyPlants' component={AuthRoutes} />
   </stackRoutes.Navigator>
 )
 
