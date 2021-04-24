@@ -9,7 +9,9 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useNavigation } from '@react-navigation/core'
 import { Button } from '../components/Button'
 import colors from '../styles/colors'
@@ -21,8 +23,15 @@ export function UserIdentification() {
   const [name, setName] = useState<string>()
   const navigation = useNavigation()
 
-  function handleNavigation() {
-    isFilled && navigation.navigate('Confirmation')
+  async function handleNavigation() {
+    if (!name) return Alert.alert('Me diz como chamar você 😥')
+
+    try {
+      await AsyncStorage.setItem('@plantmanager:user', name)
+      navigation.navigate('Confirmation')
+    } catch (error) {
+      Alert.alert('Não foi possível salvar seu nome 😥')
+    }
   }
 
   function handleInputFocus() {
