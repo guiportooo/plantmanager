@@ -28,7 +28,14 @@ export function UserIdentification() {
 
     try {
       await AsyncStorage.setItem('@plantmanager:user', name)
-      navigation.navigate('Confirmation')
+      navigation.navigate('Confirmation', {
+        title: 'Prontinho',
+        subtitle:
+          'Agora vamos começar a cuidar das suas \n plantinhas com muito cuidado.',
+        buttonText: 'Começar',
+        icon: 'smile',
+        nextScreen: 'PlantSelection',
+      })
     } catch (error) {
       Alert.alert('Não foi possível salvar seu nome 😥')
     }
@@ -58,7 +65,7 @@ export function UserIdentification() {
           <View style={styles.content}>
             <View style={styles.form}>
               <View style={styles.header}>
-                <Text style={styles.emoji}>{isFilled ? '😁' : '😀'}</Text>
+                <Text style={styles.emoji}>{isFilled ? '😄' : '😀'}</Text>
                 <Text style={styles.title}>
                   Como podemos {'\n'} chamar você?
                 </Text>
