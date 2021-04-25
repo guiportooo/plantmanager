@@ -1,25 +1,7 @@
 import { format } from 'date-fns'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-export interface PlantProps {
-  id: number
-  name: string
-  about: string
-  water_tips: string
-  photo: string
-  environments: [string]
-  frequency: {
-    times: number
-    repeat_every: string
-  }
-  dateTimeNotification: Date
-  hour: string
-}
-
-export interface StoragePlantProps {
-  [id: string]: {
-    data: PlantProps
-  }
-}
+import { PlantProps, StoragePlantProps } from './interfaces'
+import { cancelScheduling, scheduleNotification } from './notifications'
 
 export async function loadPlants(): Promise<PlantProps[]> {
   try {
@@ -49,11 +31,13 @@ export async function loadPlants(): Promise<PlantProps[]> {
 
 export async function savePlant(plant: PlantProps): Promise<void> {
   try {
+    const notificationId = await scheduleNotification(plant)
     const data = await AsyncStorage.getItem('@plantmanager:plants')
     const plants = data ? (JSON.parse(data) as StoragePlantProps) : {}
     const newPlant = {
       [plant.id]: {
         data: plant,
+        notificationId,
       },
     }
     await AsyncStorage.setItem(
@@ -66,8 +50,13 @@ export async function savePlant(plant: PlantProps): Promise<void> {
 }
 
 export async function removePlant(id: number): Promise<void> {
-  const data = await AsyncStorage.getItem('@plantmanager:plants')
-  const plants = data ? (JSON.parse(data) as StoragePlantProps) : {}
-  delete plants[id]
-  await AsyncStorage.setItem('@plantmanager:plants', JSON.stringify(plants))
+  try {
+    const data = await AsyncStorage.getItem('@plantmanager:plants')
+    const plants = data ? (JSON.parse(data) as StoragePlantProps) : {}
+    await cancelScheduling(plants[id].notificationId)
+    delete plants[id]
+    await AsyncStorage.setItem('@plantmanager:plants', JSON.stringify(plants))
+  } catch (error) {
+    throw new Error(error)
+  }
 }
